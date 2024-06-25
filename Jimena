@@ -1,0 +1,520 @@
+using System;
+
+namespace Proyecto1BD
+{
+    internal class Program
+    {
+        const int tamaño = 10;
+
+        static int[] numPago = new int[tamaño];
+        static string[] fecha = new string[tamaño];
+        static string[] hora = new string[tamaño];
+        static string[] cedula = new string[tamaño];
+        static string[] nombre = new string[tamaño];
+        static string[] apellido1 = new string[tamaño];
+        static string[] apellido2 = new string[tamaño];
+        static int[] numCaja = new int[tamaño];
+        static int[] tipoServicio = new int[tamaño];
+        static string[] numFactura = new string[tamaño];
+        static float[] montoAPagar = new float[tamaño];
+        static float[] montoComision = new float[tamaño];
+        static float[] montoDeducido = new float[tamaño];
+        static float[] montoPagadoCliente = new float[tamaño];
+        static float[] vuelto = new float[tamaño];
+
+        static int indiceActual = 0;
+        static bool continuarEjecucion = true;
+
+        static void Main(string[] args)
+        {
+            Console.Clear();
+            MostrarMenuPrincipal();
+        }
+
+        public static void MostrarMenuPrincipal()
+        {
+            string opcion = "";
+            do
+            {
+                string menuPrincipal = "**Menú Principal**\n";
+                menuPrincipal += "1. Inicializar vectores\n";
+                menuPrincipal += "2. Realizar pagos\n";
+                menuPrincipal += "3. Consultar pagos\n";
+                menuPrincipal += "4. Modificar pagos\n";
+                menuPrincipal += "5. Eliminar pagos\n";
+                menuPrincipal += "6. Submenú reportes\n";
+                menuPrincipal += "7. Salir";
+
+                Console.WriteLine(menuPrincipal);
+                opcion = Console.ReadLine();
+
+                switch (opcion)
+                {
+                    case "1":
+                        Console.Clear();
+                        IniciarVectores();
+                        break;
+                    case "2":
+                        Console.Clear();
+                        RealizarPagos();
+                        break;
+                    case "3":
+                        Console.Clear();
+                        ConsultarPagos();
+                        break;
+                    case "4":
+                        Console.Clear();
+                        ModificarPagos();
+                        break;
+                    case "5":
+                        Console.Clear();
+                        EliminarPagos();
+                        break;
+                    case "6":
+                        Console.Clear();
+                        SubMenu();
+                        break;
+                    case "7":
+                        continuarEjecucion = false;
+                        break;
+                    default:
+                        Console.Clear();
+                        Console.WriteLine("Opción no válida.");
+                        break;
+                }
+
+            } while (continuarEjecucion);
+        }
+
+        public static void SubMenu()
+        {
+            string opcion = "";
+            string menuSub = "**Submenú reportes**\n";
+            menuSub += "1. Ver todos los pagos\n";
+            menuSub += "2. Ver pagos por tipo de servicio\n";
+            menuSub += "3. Ver pagos por código de caja\n";
+            menuSub += "4. Ver dinero comisionado por servicios\n";
+            menuSub += "5. Regresar al menú principal";
+
+            do
+            {
+                Console.WriteLine(menuSub);
+                opcion = Console.ReadLine();
+                switch (opcion)
+                {
+                    case "1":
+                        Console.Clear();
+                        VerTodosLosPagos();
+                        break;
+                    case "2":
+                        Console.Clear();
+                        VerPagosPorTipoServicio();
+                        break;
+                    case "3":
+                        Console.Clear();
+                        VerPagosPorCodigoCaja();
+                        break;
+                    case "4":
+                        Console.Clear();
+                        VerDineroComisionado();
+                        break;
+                    case "5":
+                        Console.Clear();
+                        MostrarMenuPrincipal();
+                        return;
+                    default:
+                        Console.WriteLine("Opción no válida.");
+                        break;
+                }
+            } while (true);
+        }
+
+        public static void IniciarVectores()
+        {
+            Console.Clear();
+            for (int i = 0; i < tamaño; i++)
+            {
+                numPago[i] = 0;
+                fecha[i] = "";
+                hora[i] = "";
+                cedula[i] = "";
+                nombre[i] = "";
+                apellido1[i] = "";
+                apellido2[i] = "";
+                numCaja[i] = 0;
+                tipoServicio[i] = 0;
+                numFactura[i] = "";
+                montoAPagar[i] = 0;
+                montoComision[i] = 0;
+                montoDeducido[i] = 0;
+                montoPagadoCliente[i] = 0;
+                vuelto[i] = 0;
+            }
+            indiceActual = 0;
+            Console.WriteLine("Vectores inicializados con éxito.");
+            Console.WriteLine("Presione cualquier tecla para continuar");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        public static void RealizarPagos()
+        {
+            while (indiceActual < tamaño)
+            {
+                numPago[indiceActual] = indiceActual + 1;
+                Console.WriteLine($"Número de pago: {indiceActual + 1}");
+
+                DateTime now = DateTime.Now;
+                Console.WriteLine("Fecha y hora actual:" + now);
+                fecha[indiceActual] = Convert.ToString(now);
+
+                Console.WriteLine("Ingrese su número de cédula:");
+                cedula[indiceActual] = Console.ReadLine();
+
+                Console.WriteLine("Ingrese su nombre: ");
+                nombre[indiceActual] = Console.ReadLine();
+
+                Console.WriteLine("Ingrese su primer apellido: ");
+                apellido1[indiceActual] = Console.ReadLine();
+
+                Console.WriteLine("Ingrese su segundo apellido: ");
+                apellido2[indiceActual] = Console.ReadLine();
+
+                Random randm = new Random();
+                numCaja[indiceActual] = randm.Next(1, 3);
+
+                Console.WriteLine("Ingrese el tipo de servicio por el cual realiza su pago. (1: Luz, 2: Teléfono, 3: Agua): ");
+                int tipoServicioInput;
+                while (!int.TryParse(Console.ReadLine(), out tipoServicioInput) || tipoServicioInput < 1 || tipoServicioInput > 3)
+                {
+                    Console.WriteLine("Tipo de servicio no válido. Por favor ingrese 1, 2 o 3.");
+                }
+                tipoServicio[indiceActual] = tipoServicioInput;
+
+                Console.WriteLine("Ingrese el número de factura: ");
+                numFactura[indiceActual] = Console.ReadLine();
+
+                Console.WriteLine("Ingrese el monto a pagar: ");
+                float montoAPagarInput;
+                while (!float.TryParse(Console.ReadLine(), out montoAPagarInput) || montoAPagarInput <= 0)
+                {
+                    Console.WriteLine("Monto a pagar no válido. Por favor ingrese un número positivo mayor que cero.");
+                }
+                montoAPagar[indiceActual] = montoAPagarInput;
+
+                // Validar que el monto pagado por el cliente sea mayor o igual al monto a pagar
+                Console.WriteLine("Ingrese el monto que paga el cliente: ");
+                float montoPagadoClienteInput;
+                while (!float.TryParse(Console.ReadLine(), out montoPagadoClienteInput) || montoPagadoClienteInput < montoAPagar[indiceActual])
+                {
+                    Console.WriteLine($"Error: El monto pagado debe ser mayor o igual al monto a pagar ({montoAPagar[indiceActual]} colones).");
+                }
+                montoPagadoCliente[indiceActual] = montoPagadoClienteInput;
+
+                // Calcular montos de comisión y deducido
+                float comision = 0;
+                float montoFacturado = montoAPagar[indiceActual];
+                switch (tipoServicio[indiceActual])
+                {
+                    case 1:
+                        comision = 0.04f;
+                        break;
+                    case 2:
+                        comision = 0.055f;
+                        break;
+                    case 3:
+                        comision = 0.065f;
+                        break;
+                }
+
+                montoComision[indiceActual] = montoFacturado * comision;
+                montoDeducido[indiceActual] = montoFacturado - montoComision[indiceActual];
+
+                Console.WriteLine($"Monto de comisión: {montoComision[indiceActual]} colones");
+                Console.WriteLine($"Monto deducido: {montoDeducido[indiceActual]} colones");
+
+                vuelto[indiceActual] = montoPagadoCliente[indiceActual] - montoAPagar[indiceActual];
+
+                Console.WriteLine("Pago realizado correctamente.");
+                indiceActual++;
+                if (indiceActual >= tamaño)
+                {
+                    Console.WriteLine("Vectores Llenos");
+                    Console.Clear();
+                    break;
+                }
+
+                Console.WriteLine("¿Desea realizar otro pago? s/n: ");
+                string continuar = Console.ReadLine();
+                if (continuar.ToLower() != "s")
+                {
+                    break;
+                }
+            }
+        }
+
+        public static void ConsultarPagos()
+        {
+            try
+            {
+                Console.WriteLine("Ingrese el número de pago que desea consultar: ");
+                int numeroPago = int.Parse(Console.ReadLine());
+
+                int indice = BuscarIndicePorNumeroPago(numeroPago);
+                if (indice == -1)
+                {
+                    Console.WriteLine("Pago no se encuentra registrado.");
+                    return;
+                }
+
+                MostrarPago(indice);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Error: Ingrese un número válido para el número de pago.");
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("Error: Número fuera del rango válido.");
+            }
+        }
+
+        public static void ModificarPagos()
+        {
+            try
+            {
+                Console.WriteLine("Ingrese el número de pago que desea modificar: ");
+                int numeroPago = int.Parse(Console.ReadLine());
+
+                int indice = BuscarIndicePorNumeroPago(numeroPago);
+                if (indice == -1)
+                {
+                    Console.WriteLine("Pago no se encuentra registrado.");
+                    return;
+                }
+
+                MostrarPago(indice);
+
+                // Permitir al usuario seleccionar qué campo modificar
+                Console.WriteLine("Seleccione el campo que desea modificar:");
+                Console.WriteLine("1. Fecha");
+                Console.WriteLine("2. Hora");
+                Console.WriteLine("3. Cédula");
+                Console.WriteLine("4. Nombre");
+                Console.WriteLine("5. Apellido 1");
+                Console.WriteLine("6. Apellido 2");
+                Console.WriteLine("7. Número de caja");
+                Console.WriteLine("8. Tipo de servicio");
+                Console.WriteLine("9. Número de factura");
+                Console.WriteLine("10. Monto a pagar");
+                Console.WriteLine("11. Monto pagado por cliente");
+
+                string opcion = Console.ReadLine();
+                switch (opcion)
+                {
+                    case "1":
+                        Console.WriteLine("Ingrese la nueva fecha: ");
+                        fecha[indice] = Console.ReadLine();
+                        break;
+                    case "2":
+                        Console.WriteLine("Ingrese la nueva hora: ");
+                        hora[indice] = Console.ReadLine();
+                        break;
+                    case "3":
+                        Console.WriteLine("Ingrese la nueva cédula: ");
+                        cedula[indice] = Console.ReadLine();
+                        break;
+                    case "4":
+                        Console.WriteLine("Ingrese el nuevo nombre: ");
+                        nombre[indice] = Console.ReadLine();
+                        break;
+                    case "5":
+                        Console.WriteLine("Ingrese el nuevo primer apellido: ");
+                        apellido1[indice] = Console.ReadLine();
+                        break;
+                    case "6":
+                        Console.WriteLine("Ingrese el nuevo segundo apellido: ");
+                        apellido2[indice] = Console.ReadLine();
+                        break;
+                    case "7":
+                        Console.WriteLine("Ingrese el nuevo número de caja: ");
+                        numCaja[indice] = int.Parse(Console.ReadLine());
+                        break;
+                    case "8":
+                        Console.WriteLine("Ingrese el nuevo tipo de servicio (1: Luz, 2: Teléfono, 3: Agua): ");
+                        tipoServicio[indice] = int.Parse(Console.ReadLine());
+                        break;
+                    case "9":
+                        Console.WriteLine("Ingrese el nuevo número de factura: ");
+                        numFactura[indice] = Console.ReadLine();
+                        break;
+                    case "10":
+                        Console.WriteLine("Ingrese el nuevo monto a pagar: ");
+                        montoAPagar[indice] = float.Parse(Console.ReadLine());
+                        break;
+                    case "11":
+                        Console.WriteLine("Ingrese el nuevo monto pagado por cliente: ");
+                        montoPagadoCliente[indice] = float.Parse(Console.ReadLine());
+                        break;
+                    default:
+                        Console.WriteLine("Opción no válida.");
+                        return;
+                }
+
+                // Actualizar otros campos relacionados si es necesario (comisión, deducido, vuelto, etc.)
+
+                Console.WriteLine("Pago modificado correctamente.");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Error: Ingrese un valor válido para la modificación.");
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("Error: Valor fuera del rango válido.");
+            }
+        }
+
+        public static void EliminarPagos()
+        {
+            try
+            {
+                Console.WriteLine("Ingrese el número de pago que desea eliminar: ");
+                int numeroPago = int.Parse(Console.ReadLine());
+
+                int indice = BuscarIndicePorNumeroPago(numeroPago);
+                if (indice == -1)
+                {
+                    Console.WriteLine("Pago no se encuentra registrado.");
+                    return;
+                }
+
+                // Desplazar los elementos restantes
+                for (int i = indice; i < tamaño - 1; i++)
+                {
+                    numPago[i] = numPago[i + 1];
+                    fecha[i] = fecha[i + 1];
+                    hora[i] = hora[i + 1];
+                    cedula[i] = cedula[i + 1];
+                    nombre[i] = nombre[i + 1];
+                    apellido1[i] = apellido1[i + 1];
+                    apellido2[i] = apellido2[i + 1];
+                    numCaja[i] = numCaja[i + 1];
+                    tipoServicio[i] = tipoServicio[i + 1];
+                    numFactura[i] = numFactura[i + 1];
+                    montoAPagar[i] = montoAPagar[i + 1];
+                    montoComision[i] = montoComision[i + 1];
+                    montoDeducido[i] = montoDeducido[i + 1];
+                    montoPagadoCliente[i] = montoPagadoCliente[i + 1];
+                    vuelto[i] = vuelto[i + 1];
+                }
+
+                // Limpiar el último elemento
+                numPago[tamaño - 1] = 0;
+                fecha[tamaño - 1] = "";
+                hora[tamaño - 1] = "";
+                cedula[tamaño - 1] = "";
+                nombre[tamaño - 1] = "";
+                apellido1[tamaño - 1] = "";
+                apellido2[tamaño - 1] = "";
+                numCaja[tamaño - 1] = 0;
+                tipoServicio[tamaño - 1] = 0;
+                numFactura[tamaño - 1] = "";
+                montoAPagar[tamaño - 1] = 0;
+                montoComision[tamaño - 1] = 0;
+                montoDeducido[tamaño - 1] = 0;
+                montoPagadoCliente[tamaño - 1] = 0;
+                vuelto[tamaño - 1] = 0;
+
+                Console.WriteLine("Pago eliminado correctamente.");
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("Error: Ingrese un número válido para el número de pago.");
+            }
+            catch (OverflowException)
+            {
+                Console.WriteLine("Error: Número fuera del rango válido.");
+            }
+        }
+
+        public static void VerTodosLosPagos()
+        {
+            for (int i = 0; i < tamaño; i++)
+            {
+                if (numPago[i] != 0)
+                {
+                    MostrarPago(i);
+                }
+            }
+        }
+
+        public static void VerPagosPorTipoServicio()
+        {
+            Console.WriteLine("Ingrese el tipo de servicio para filtrar (1: Luz, 2: Teléfono, 3: Agua): ");
+            int tipo = int.Parse(Console.ReadLine());
+
+            for (int i = 0; i < tamaño; i++)
+            {
+                if (tipoServicio[i] == tipo)
+                {
+                    MostrarPago(i);
+                }
+            }
+        }
+
+        public static void VerPagosPorCodigoCaja()
+        {
+            Console.WriteLine("Ingrese el número de caja para filtrar: ");
+            int num = int.Parse(Console.ReadLine());
+
+            for (int i = 0; i < tamaño; i++)
+            {
+                if (numCaja[i] == num)
+                {
+                    MostrarPago(i);
+                }
+            }
+        }
+
+        public static void VerDineroComisionado()
+        {
+            float totalComisionado = 0;
+            for (int i = 0; i < tamaño; i++)
+            {
+                totalComisionado += montoComision[i];
+            }
+            Console.WriteLine($"El total de dinero comisionado por servicios es: {totalComisionado} colones");
+        }
+
+        public static void MostrarPago(int indice)
+        {
+            Console.WriteLine($"Número de pago: {numPago[indice]}");
+            Console.WriteLine($"Fecha: {fecha[indice]}");
+            Console.WriteLine($"Hora: {hora[indice]}");
+            Console.WriteLine($"Cédula: {cedula[indice]}");
+            Console.WriteLine($"Nombre: {nombre[indice]} {apellido1[indice]} {apellido2[indice]}");
+            Console.WriteLine($"Número de caja: {numCaja[indice]}");
+            Console.WriteLine($"Tipo de servicio: {tipoServicio[indice]}");
+            Console.WriteLine($"Número de factura: {numFactura[indice]}");
+            Console.WriteLine($"Monto a pagar: {montoAPagar[indice]} colones");
+            Console.WriteLine($"Monto pagado por cliente: {montoPagadoCliente[indice]} colones");
+            Console.WriteLine($"Monto de comisión: {montoComision[indice]} colones");
+            Console.WriteLine($"Monto deducido: {montoDeducido[indice]} colones");
+            Console.WriteLine($"Vuelto: {vuelto[indice]} colones");
+            Console.WriteLine("----------------------------------------");
+        }
+
+        public static int BuscarIndicePorNumeroPago(int numeroPago)
+        {
+            for (int i = 0; i < tamaño; i++)
+            {
+                if (numPago[i] == numeroPago)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    }
+}
